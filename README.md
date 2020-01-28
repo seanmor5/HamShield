@@ -1,23 +1,46 @@
-# HamShield
+# HamShield for Raspberry Pi
 
-You can purchase HamShield (as well as smaller variants or LoRa version) at http://www.enhancedradio.com/
+This repository is a hack for HamShield integration with the Raspberry Pi Compute Module and Raspberry Pi IO board.
 
-The master branch is intended for use with HamShield hardware -09 and above.
+You can purchase HamShield (as well as smaller variants or LoRa version) at http://www.enhancedradio.com/.
 
-WARNING: The dev branch is not guaranteed to work. Please use caution if you choose to use that branch. 
+## Layout
 
-# HamShield Arduino Library and Example Sketches
+The HamShield library is designed to work out of the box with the Arduino. While it also integrates nicely with a typical Raspberry Pi, there are some issues when working with the Raspberry Pi Compute Module and IO Board. These issues are fixed using some tweaks to the HamShield Library (namely configuring WiringPi to work without re-mapping), and by adjusting the connections between the Raspberry Pi and HamShield.
 
-This repository is meant to be checked out into your Arduino application's libraries folder. After reloading the application, the library and example sketches should be available for use.
+Note this has only been tested on a HamShield LoRa. The wiring configuration is:
 
-For overview, help, tricks, tips, and more, check out the wiki: 
+```
+Vin	<->	Any 5v pin, these pins share a common node
+Vg	<->	Any ground pin, these pins share a common node
+nCS	<->	pin 17, BCM17 on GPIO board
+DAT	<->	pin 27, BCM27 on GPIO board
+CLK	<-> pin 22, BCM22 on GPIO board
+MIC	<->	pin 18, BCM18 on GPIO board
+RST	<->	pin 23, BCM23 on GPIO board
+```
 
-https://github.com/EnhancedRadioDevices/HamShield/wiki
+## Installation
 
-# KISS and AFSK
+On a Raspbian image, install WiringPi.
 
-We've moved the KISS and AFSK code to a separate library to help keep memory usage in simple sketches down. To use the AFSK examples, please also install these libraries:
+```
+$ apt-get install wiringpi wiringpi2
+```
 
-- https://github.com/EnhancedRadioDevices/DDS
-- https://github.com/EnhancedRadioDevices/HamShield_KISS
+Next, clone this repository.
+
+```
+$ git clone https://github.com/seanmor5/HamShield
+```
+
+Navigate to the `src` directory and run the following:
+
+```
+$ make
+...
+$ make install
+```
+
+You should be good to go. Test the installation by compiling and running one of the examples.
 

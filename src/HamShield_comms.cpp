@@ -19,8 +19,13 @@ void HSsetPins(uint8_t ncs, uint8_t clk, uint8_t dat) {
     clk_pin = clk;
     dat_pin = dat;
 
-#if !defined(ARDUINO)    
-    wiringPiSetup();
+// Not using arduino
+#if !defined(ARDUINO)
+	#if GPIOBOARD // using Compute Module with IO Board
+		wiringPiSetupGpio(); // use GPIO layout without re-mapping
+	#else 
+    	wiringPiSetup(); // use regular setup
+    #endif
 #endif
     
     pinMode(ncs_pin, OUTPUT);

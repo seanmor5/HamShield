@@ -25,7 +25,7 @@
 #define RESET_PIN 23
 #else
 #define MIC_PIN 3
-#define RESET_PIN 6
+#define RESET_PIN 4
 #endif
 
 HamShield radio;
@@ -41,7 +41,7 @@ void setup() {
   pinMode(RESET_PIN, OUTPUT);
   digitalWrite(RESET_PIN, HIGH);
   
-  std::usleep(5000); // wait for device to come up, usleep in microseconds
+  usleep(5000); // wait for device to come up, usleep in microseconds
   
   // Send some stdout stuff
   std::cout << "HamShield FM Beacon Example" << std::endl;
@@ -51,7 +51,7 @@ void setup() {
   int result = radio.testConnection();
   if(result == 0){ // connection failed, quit program
     std::cout << "failed" << std::endl;
-    std::exit();
+    std::exit(1);
   } else { // connection success, continue
     std::cout << "success" << std::endl;
   }
@@ -67,13 +67,15 @@ void setup() {
   radio.setMorseDotMillis(100);
 
   // Configure the HamShield
-  radio.frequency(438000); // 438 MHz
+  radio.frequency(432300); // 438 MHz
   
   std::cout << "Radio Configured." << std::endl;
 }
 
 int main(int argc, char **argv){
+    setup();
     // We'll wait up to 10 seconds for a clear channel, requiring that the channel is clear for 2 seconds before we transmit
+    while(true){
     if (radio.waitForChannel(30000,2000,-5)) {
       // If we get here, the channel is clear. Let's print the RSSI to the serial port as well.
       std::cout << "Signal is clear, RSSI: ";
@@ -84,7 +86,8 @@ int main(int argc, char **argv){
       radio.setModeTransmit();
       
       // Send a message out in morse code
-      radio.morseOut(" CALLSIGN HAMSHIELD");
+      char msg[] = " BEAT NAVY";
+      radio.morseOut(msg);
       
       // We're done sending the message, set the radio back into recieve mode.
       radio.setModeReceive();
@@ -96,5 +99,6 @@ int main(int argc, char **argv){
     }
 
     // Wait 10 seconds before we send our beacon again.
-    std::sleep(10); // sleep in seconds
+    sleep(10); // sleep in seconds
+    }
 }
